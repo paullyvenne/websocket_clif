@@ -12,28 +12,29 @@ const App = (props: Object) => {
    payload: '',
   });
   
-  const connectSocket = (url) => {
+  const connectSocket = (url, msg) => {
     let socket = new WebSocket(url);
     const self = this;
     socket.onopen = function(event) {
       console.log("[open] Connection established");
       console.log("Sending to server");
-      socket.send("My name is John");
+      socket.send(msg); // THIS IS REQUIRED TO RESPONSE
+      // console.log(msg);
 
       console.log(event, new Date());
-      setState({type: event.type, timestamp:  new Date().toUTCString()});
+      setState({...state, type: event.type, timestamp:  new Date().toUTCString()});
     };
 
     socket.onmessage = function(event) {
-      setState({payload: event.data, timestamp:  new Date().toUTCString()});
+      setState({...state, payload: event.data, timestamp:  new Date().toUTCString()});
     };
 
     socket.onclose = function(event) {
-      setState({type: event.type, payload: event.reason, timestamp:  new Date().toUTCString()});
+      setState({...state, type: event.type, payload: event.reason, timestamp:  new Date().toUTCString()});
     };
 
     socket.onerror = function(error) {
-      setState({type: error.type, payload: error.message, timestamp:  new Date().toUTCString()});
+      setState({...state, type: error.type, payload: error.message, timestamp:  new Date().toUTCString()});
     };
 
   }
